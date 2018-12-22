@@ -1,0 +1,17 @@
+.button_style{
+    -fx-max-width:390px;
+    -fx-background-radius:0;
+}
+#manageEmployeesButton{
+    -fx-max-width:390px;
+    -fx-background-radius:0;
+    -fx-background-color:#11AAFF;
+}
+
+.not_active1{
+    -fx-background-color:#111111;
+}
+
+.not_active2{
+    -fx-background-color:#11AAFF;
+}

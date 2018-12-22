@@ -5,7 +5,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 
@@ -21,27 +23,14 @@ public class Controller implements Initializable {
     Model model = new Model();
     Connection connection = model.connection;
 
-
-
-
-
-    ///////////// Side Menu Buttons /////////////
-    @FXML
-    public Button manageEmployeesButton;
-    @FXML
-    public Button manageSuppliesButton;
-    @FXML
-    public Button manageRewardsButton;
-    @FXML
-    public Button manageProductsButton;
+    public Controller(){
+        //updateViewFromModel();
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @FXML
-    public Button viewProductsButton;
-
-
-    ///////////// Global Panes /////////////
+    //region Global Panes
     @FXML
     public FlowPane mainFlowPane;
     @FXML
@@ -55,110 +44,24 @@ public class Controller implements Initializable {
 
     @FXML
     public AnchorPane manageSuppliesAnchorPane;
+    //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @FXML
-    public ListView<String> employeesListView;
-    @FXML
-    public ListView<String> suppliersListView;
-    @FXML
-    public ListView<String> rewardsListView;
-    @FXML
-    public ListView<String> productsListView;
-
-
-    @FXML
-    public Button viewEmployeesButton;
-
-    ///////////// Add employee variables /////////////
-    @FXML
-    public GridPane addEmployeeGridPane;
-    @FXML
-    public Button addEmployeeButton;
-    @FXML
-    public TextField empFirstnameTextField;
-    @FXML
-    public TextField empLastnameTextField;
-    @FXML
-    public DatePicker empBirthdatePicker;
-    @FXML
-    public TextField empPhoneTextField;
-    @FXML
-    public TextField empSalaryTextField;
-    @FXML
-    public ComboBox<Position> roleEmpComboBox;
-    @FXML
-    public ComboBox<Branch> branchEmpComboBox;
-    @FXML
-    public Button submitAddButton;
-    @FXML
-    public Button clearEmpData;
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ///////////// Add product variables /////////////
-    @FXML
-    public GridPane addProductGridPane;
-    @FXML
-    public Button clearProductDataButton;
-    @FXML
-    public Button submitAddProductButton;
-    @FXML
-    public Button addCategoryButton;
+    //region Side Menu
 
+    ///////////// Side Menu Buttons /////////////
     @FXML
-    public TextField productNameTextField;
+    public Button manageEmployeesButton;
     @FXML
-    public TextField productPriceTextField;
+    public Button manageSuppliesButton;
     @FXML
-    public ComboBox<Category> productCategoryComboBox;
+    public Button manageRewardsButton;
     @FXML
-    public TextArea productDescriptionTextArea;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ///////////// Add supplier variables /////////////
-    @FXML
-    public GridPane addSupplierGridPane;
-    @FXML
-    public Button clearSupplierDataButton;
-    @FXML
-    public Button submitAddSupplierButton;
-
-    @FXML
-    public TextField supplierNameTextField;
-    @FXML
-    public TextField supplierPhoneTextField;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ///////////// Add reward variables /////////////
-    @FXML
-    public GridPane addRewardGridPane;
-    @FXML
-    public Button clearRewardDataButton;
-    @FXML
-    public Button submitAddRewardButton;
-
-
-    public ComboBox<Product> rewardProductComboBox;
-    @FXML
-    public TextField rewardPointsTextField;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    public String currentlyViewing = "";
-
-
-    public Controller(){
-        //updateViewFromModel();
-    }
-
+    public Button manageProductsButton;
 
     ///////////// Side Menu Handlers /////////////
-
     @FXML
     public void manageEmployeesHandler(){
 
@@ -191,32 +94,107 @@ public class Controller implements Initializable {
         mainFlowPane.getChildren().add(1,manageProductsAnchorPane);
         viewProductsHandler();
     }
+    //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
     ///////////// Employee Management /////////////
 
+    //region Employees Management
+
+    ///////////// Variables /////////////
+
+    ///////////// Add employee variables /////////////
+    @FXML
+    public GridPane addEmployeeGridPane;
+    @FXML
+    public TextField empFirstnameTextField;
+    @FXML
+    public TextField empLastnameTextField;
+    @FXML
+    public TextField empPhoneTextField;
+    @FXML
+    public TextField empSalaryTextField;
+    @FXML
+    public DatePicker empBirthdatePicker;
+    @FXML
+    public ComboBox<Position> roleEmpComboBox;
+    @FXML
+    public ComboBox<Branch> branchEmpComboBox;
+    @FXML
+    public Button addEmployeeButton;
+    @FXML
+    public Button submitAddButton;
+    @FXML
+    public Button clearEmpData;
+    @FXML
+    public Button viewEmployeesButton;
+
+    ///////////// Table View ////////////////////////////////////////////////////////////////////////
+    @FXML
+    public TableView<Employee> employeesTableView;
+
+    @FXML
+    public TableColumn<Employee , Integer> employeeIdTableColumn;
+    @FXML
+    public TableColumn<Employee , String> employeeNameTableColumn;
+    @FXML
+    public TableColumn<Employee , String> employeePhoneTableColumn;
+    @FXML
+    public TableColumn<Employee , String> employeeBirthdayTableColumn;
+    @FXML
+    public TableColumn<Employee , Integer> employeeSalaryTableColumn;
+    @FXML
+    public TableColumn<Employee , String> employeePositionTableColumn;
+
+    public void setUpEmployeesTable() {
+        employeeIdTableColumn.setCellValueFactory(new PropertyValueFactory<>("employeeid"));
+        employeeNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        employeePhoneTableColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        employeeBirthdayTableColumn.setCellValueFactory(new PropertyValueFactory<>("birthday"));
+        employeeSalaryTableColumn.setCellValueFactory(new PropertyValueFactory<>("salary"));
+        employeePositionTableColumn.setCellValueFactory(new PropertyValueFactory<>("positionName"));
+
+        model.getEmployees();
+        employeesTableView.setItems(model.employees);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
     @FXML
     public void viewEmployeesHandler() {
+        //manageEmployeesButton.getStyleClass().add("active");
+        manageEmployeesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#11AAFF;");
+
+        manageSuppliesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1A00AA;");
+
+        manageRewardsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1C046B;");
+
+        manageProductsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1A00AA;");
+
         addEmployeeGridPane.setVisible(false);
-        employeesListView.setVisible(true);
+        employeesTableView.setVisible(true);
         submitAddButton.setVisible(false);
         clearEmpData.setVisible(false);
 
         branchEmpComboBox.setPromptText("Select Branch");
         model.getEmployees();
-        employeesListView.setItems(model.names);
+        employeesTableView.setItems(model.employees);
     }
 
 
     //Add Employee Button Pressed
     @FXML
     public void addEmployeeViewHandler(){
-        employeesListView.setVisible(false);
+        employeesTableView.setVisible(false);
         addEmployeeGridPane.setVisible(true);
         submitAddButton.setVisible(true);
         clearEmpData.setVisible(true);
@@ -260,22 +238,72 @@ public class Controller implements Initializable {
         roleEmpComboBox.getSelectionModel().clearAndSelect(0);
         branchEmpComboBox.getSelectionModel().clearAndSelect(0);
     }
+    //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //region Suppliers Management
 
-    ///////////// Supplies Management /////////////
+    ///////////// Add supplier variables /////////////
+    @FXML
+    public GridPane addSupplierGridPane;
+    @FXML
+    public Button clearSupplierDataButton;
+    @FXML
+    public Button submitAddSupplierButton;
 
     @FXML
+    public TextField supplierNameTextField;
+    @FXML
+    public TextField supplierPhoneTextField;
+
+    ////////////// Table View //////////////////////////////////////////////////////////////////////
+    @FXML
+    public TableView<Supplier> suppliersTableView;
+
+    @FXML
+    public TableColumn<Supplier, Integer> supplierIdTableColumn;
+    @FXML
+    public TableColumn<Supplier, String> supplierNameTableColumn;
+    @FXML
+    public TableColumn<Supplier, String> supplierPhoneTableColumn;
+
+    public void setUpSuppliersTable() {
+
+        supplierIdTableColumn.setCellValueFactory(new PropertyValueFactory<>("supplierid"));
+        supplierNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        supplierPhoneTableColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
+        model.getSuppliers();
+        suppliersTableView.setItems(model.suppliers);
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    @FXML
     public void viewSuppliersHandler() {
-        suppliersListView.setVisible(true);
+        manageEmployeesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1C046B;");
+
+        manageSuppliesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#11AAFF;");
+
+        manageRewardsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1C046B;");
+
+        manageProductsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1A00AA;");
+
+        suppliersTableView.setVisible(true);
         addSupplierGridPane.setVisible(false);
         submitAddSupplierButton.setVisible(false);
         clearSupplierDataButton.setVisible(false);
 
         model.getSuppliers();
-        suppliersListView.setItems(model.suppliers);
+        suppliersTableView.setItems(model.suppliers);
     }
 
     @FXML
@@ -283,7 +311,7 @@ public class Controller implements Initializable {
         addSupplierGridPane.setVisible(true);
         submitAddSupplierButton.setVisible(true);
         clearSupplierDataButton.setVisible(true);
-        suppliersListView.setVisible(false);
+        suppliersTableView.setVisible(false);
 
     }
 
@@ -304,23 +332,77 @@ public class Controller implements Initializable {
         supplierNameTextField.setText("");
         supplierPhoneTextField.setText("");
     }
-
-
+    //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ///////////// Rewards Management /////////////
+    //region Rewards Management
+
+    ///////////// Add reward variables /////////////
+    @FXML
+    public GridPane addRewardGridPane;
+    @FXML
+    public Button clearRewardDataButton;
+    @FXML
+    public Button submitAddRewardButton;
+
+
+    public ComboBox<Product> rewardProductComboBox;
+    @FXML
+    public TextField rewardPointsTextField;
+
+
+    /////////////////Table View////////////////////////////////////////////////////////////////////
+    @FXML
+    public TableView<Reward> rewardsTableView;
+
+    @FXML
+    public TableColumn<Reward , Integer> rewardIdTableColumn;
+    @FXML
+    public TableColumn<Reward , String> rewardNameTableColumn;
+    @FXML
+    public TableColumn<Reward , Integer> rewardPriceTableColumn;
+    @FXML
+    public TableColumn<Reward , Integer> rewardPointsTableColumn;
+
+    public void setUpRewardsTable() {
+        rewardIdTableColumn.setCellValueFactory(new PropertyValueFactory<>("productid"));
+        rewardNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        //rewardPriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
+        rewardPointsTableColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
+
+        model.getRewards();
+        rewardsTableView.setItems(model.rewards);
+
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     @FXML
     public void viewRewardsHandler() {
-        rewardsListView.setVisible(true);
+        manageEmployeesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1C046B;");
+
+        manageSuppliesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1A00AA;");
+
+        manageRewardsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#11AAFF;");
+
+        manageProductsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1A00AA;");
+
+        rewardsTableView.setVisible(true);
         addRewardGridPane.setVisible(false);
         clearRewardDataButton.setVisible(false);
         submitAddRewardButton.setVisible(false);
 
         model.getRewards();
-        rewardsListView.setItems(model.rewards);
+        rewardsTableView.setItems(model.rewards);
 
     }
 
@@ -329,7 +411,7 @@ public class Controller implements Initializable {
         addRewardGridPane.setVisible(true);
         clearRewardDataButton.setVisible(true);
         submitAddRewardButton.setVisible(true);
-        rewardsListView.setVisible(false);
+        rewardsTableView.setVisible(false);
 
         ArrayList<Product> productsForComboBox = model.getProductsForComboBox();
         ObservableList<Product> observableProducts = FXCollections.observableArrayList(productsForComboBox);
@@ -342,10 +424,15 @@ public class Controller implements Initializable {
         Reward reward = new Reward();
 
         reward.productid = rewardProductComboBox.getValue().productid;
-        reward.productname = rewardProductComboBox.getValue().name;
+        reward.productName = rewardProductComboBox.getValue().name;
         reward.cost = Integer.valueOf(rewardPointsTextField.getText());
 
-        model.addReward(reward);
+        try {
+            model.addReward(reward);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -354,23 +441,89 @@ public class Controller implements Initializable {
         rewardProductComboBox.setPromptText("Select Product");
         rewardPointsTextField.setText("");
     }
+    //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ///////////// Products Management /////////////
+    //region Products Management
+
+    ///////////// Add product variables /////////////
+    @FXML
+    public GridPane addProductGridPane;
+    @FXML
+    public Button viewProductsButton;
+    @FXML
+    public Button clearProductDataButton;
+    @FXML
+    public Button submitAddProductButton;
+    @FXML
+    public Button addCategoryButton;
+    @FXML
+    public TextField productNameTextField;
+    @FXML
+    public TextField productPriceTextField;
+    @FXML
+    public ComboBox<Category> productCategoryComboBox;
+    @FXML
+    public TextArea productDescriptionTextArea;
+
+    ///////////// Table View ///////////////////////////////////////////////////////////////////////////////
+
+    @FXML
+    public TableView<Product> productsTableView;
+
+
+    @FXML
+    public TableColumn<Product , Integer> productIdTableColumn;
+    @FXML
+    public TableColumn<Product , String> productNameTableColumn;
+    @FXML
+    public TableColumn<Product , Integer> productPriceTableColumn;
+    @FXML
+    public TableColumn<Product , String> productCategoryTableColumn;
+    @FXML
+    public TableColumn<Product , String> productDescriptionTableColumn;
+
+    public void setUpProductsTable(){
+        productIdTableColumn.setCellValueFactory(new PropertyValueFactory<>("productid"));
+        productNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        productPriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        productCategoryTableColumn.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
+        productDescriptionTableColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        model.getProducts();
+        productsTableView.setItems(model.products);
+
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @FXML
     public void viewProductsHandler(){
+        manageEmployeesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1C046B;"); //Dark
+
+        manageSuppliesButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1A00AA;"); //Light
+
+        manageRewardsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#1C046B;"); //Dark
+
+        manageProductsButton.setStyle("-fx-max-width:390px;\n" +
+                "-fx-background-radius:0;\n" +
+                "-fx-background-color:#11AAFF;"); //Active
         addProductGridPane.setVisible(false);
         submitAddProductButton.setVisible(false);
         clearProductDataButton.setVisible(false);
         addCategoryButton.setVisible(false);
-        productsListView.setVisible(true);
+        productsTableView.setVisible(true);
 
 
         model.getProducts();
-        productsListView.setItems(model.products);
+        productsTableView.setItems(model.products);
 
 
 
@@ -382,7 +535,7 @@ public class Controller implements Initializable {
         submitAddProductButton.setVisible(true);
         clearProductDataButton.setVisible(true);
         addCategoryButton.setVisible(true);
-        productsListView.setVisible(false);
+        productsTableView.setVisible(false);
 
 
 
@@ -425,18 +578,62 @@ public class Controller implements Initializable {
             Category newCat = new Category(name);
             model.addCategory(newCat);
             addProductViewHandler();
-
         });
     }
+    //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         viewEmployeesHandler();
+        loginComboBox.setItems(FXCollections.observableArrayList("Manager" , "Customer"));
+
+        setUpViews();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //region Login
+    @FXML
+    public AnchorPane loginAnchorPane;
+
+    @FXML
+    public TextField usernameTextField;
+    @FXML
+    public TextField passwordTextField;
+
+    @FXML
+    public ComboBox<String> loginComboBox;
+
+
+
+    @FXML
+    public void loginHandler() {
+        String username = usernameTextField.getText();
+        String password = passwordTextField.getText();
+        if (loginComboBox.getValue()==null)
+            return;
+        String side = loginComboBox.getValue();
+
+        if (model.verifyUser(username,password,side)){
+            loginAnchorPane.setVisible(false);
+        }
+    }
+    //endregion
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void setUpViews(){
+        setUpSuppliersTable();
+        setUpEmployeesTable();
+        setUpRewardsTable();
+        setUpProductsTable();
+    }
+
 }
 
 

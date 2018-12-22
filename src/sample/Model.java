@@ -7,7 +7,11 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Model {
-    ObservableList<String> names, products, rewards, suppliers;
+    ObservableList<Employee> employees;
+    ObservableList<Supplier> suppliers;
+    ObservableList<Reward> rewards;
+    ObservableList<Product> products;
+
 
     Connection connection;
 
@@ -38,17 +42,28 @@ public class Model {
 
     ////////// Getting Tables //////////
     public void getEmployees() {
-        ArrayList<String> list = new ArrayList<>();
+        int empid, salary, positionid, branchid;
+        String firstName, lastName, phone, birthday, employmentDate, positionName;
+        ArrayList<Employee> empsTemp = new ArrayList<>();
+        Employee employee;
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Employee");
-
-
-
+            ResultSet resultSet = statement.executeQuery("select * from Employee e join Position p where e.positionid = p.positionid");
             try {
                 while (resultSet.next()){
-                    list.add(resultSet.getString(2));
+                    empid = resultSet.getInt("employeeid");
+                    firstName = resultSet.getString("first_name");
+                    lastName = resultSet.getString("last_name");
+                    phone = resultSet.getString("phone");
+                    birthday = resultSet.getString("birthday");
+                    salary = resultSet.getInt("salary");
+                    employmentDate = resultSet.getString("employment_date");
+                    branchid = resultSet.getInt("branchid");
+                    positionid = resultSet.getInt("positionid");
+                    positionName = resultSet.getString("position_name");
 
+                    employee = new Employee(empid, firstName, lastName, phone, birthday, salary, employmentDate, branchid, positionid, positionName);
+                    empsTemp.add(employee);
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -57,19 +72,18 @@ public class Model {
         }catch (Exception e2) {
             e2.printStackTrace();
         }
-        names = FXCollections.observableArrayList(list);
-
+        employees = FXCollections.observableArrayList(empsTemp);
     }
 
     public void getSuppliers() {
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<Supplier> list = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from Supplier");
 
             try {
                 while (resultSet.next()){
-                    list.add(resultSet.getString(2));
+                    list.add(new Supplier(resultSet.getInt("supplierid"),resultSet.getString("name") , resultSet.getString("phone")));
 
                 }
             } catch (Exception e1) {
@@ -83,15 +97,21 @@ public class Model {
     }
 
     public void getRewards() {
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<Reward> list = new ArrayList<>();
+        int productid, price, cost;
+        String name;
+        Reward reward;
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select name,cost from Reward r join product p where r.productid = p.productid");
-
+            ResultSet resultSet = statement.executeQuery("select p.productid, name, cost, price from Reward r join Product p where r.productid = p.productid");
             try {
                 while (resultSet.next()){
-                    list.add(resultSet.getString(1) + ", " + resultSet.getString(2) + " points");
-
+                    productid = resultSet.getInt("productid");
+                    price = resultSet.getInt("price");
+                    cost = resultSet.getInt("cost");
+                    name = resultSet.getString("name");
+                    reward = new Reward(productid, name, cost, price);
+                    list.add(reward);
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -104,15 +124,24 @@ public class Model {
     }
 
     public void getProducts() {
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<Product> list = new ArrayList<>();
+        int productid, price, categoryid;
+        String name, description, categoryName;
+        Product product;
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Product");
+            ResultSet resultSet = statement.executeQuery("select * from Product p join Category c where p.categoryid = c.categoryid");
 
             try {
                 while (resultSet.next()){
-                    list.add(resultSet.getString(2));
-
+                    productid = resultSet.getInt("productid");
+                    price = resultSet.getInt("price");
+                    categoryid = resultSet.getInt("categoryid");
+                    name = resultSet.getString("name");
+                    description = resultSet.getString("description");
+                    categoryName = resultSet.getString("c.name");
+                    product = new Product(productid, name, price, description, categoryid, categoryName);
+                    list.add(product);
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -247,7 +276,10 @@ public class Model {
             preparedStatement.setInt(1, reward.productid);
             preparedStatement.setInt(2, reward.cost);
             preparedStatement.execute();
-        }catch (Exception e){
+        }catch (SQLIntegrityConstraintViolationException e){
+            e.printStackTrace();
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -282,6 +314,26 @@ public class Model {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    public boolean verifyUser(String username , String password , String side) {
+        try {
+            String query = "Select username , password from " + side + " where username=? and password=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.first() && resultSet.getString("password").equals(password))
+                return true;
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
 }

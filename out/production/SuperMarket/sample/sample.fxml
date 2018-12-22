@@ -5,7 +5,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,174 +16,221 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<FlowPane fx:id="mainFlowPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
-    <children>
-        <VBox prefHeight="485.0" prefWidth="200.0" style="-fx-background-color: #1C046B;">
-            <children>
-                <Button fx:id="manageEmployeesButton" maxWidth="163.0" mnemonicParsing="false" onAction="#manageEmployeesHandler" prefHeight="27.0" prefWidth="163.0" style="-fx-background-color: #1C046B; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Employees" textFill="WHITE" underline="true">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                </Button>
-                <Button fx:id="manageSuppliesButton" mnemonicParsing="false" onAction="#manageSuppliesHandler" style="-fx-background-color: #1A00AA; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Supplies" textFill="WHITE" underline="true" />
-                <Button fx:id="manageRewardsButton" mnemonicParsing="false" onAction="#manageRewardsHandler" style="-fx-background-color: #1C046B; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Rewards" textFill="WHITE" underline="true" />
-                <Button fx:id="manageProductsButton" mnemonicParsing="false" onAction="#manageProductsHandler" style="-fx-background-color: #1A00AA; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Products" textFill="WHITE" underline="true" />
-            </children>
-            <FlowPane.margin>
-                <Insets />
-            </FlowPane.margin>
-        </VBox>
-        <AnchorPane fx:id="manageEmployeesAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
-            <FlowPane.margin>
-                <Insets />
-            </FlowPane.margin>
-            <padding>
-                <Insets bottom="200.0" />
-            </padding>
-            <children>
-                <ListView fx:id="employeesListView" layoutX="100.0" layoutY="88.0" prefHeight="496.0" prefWidth="368.0" visible="false" AnchorPane.bottomAnchor="-184.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="88.0" />
-                <Button fx:id="viewEmployeesButton" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEmployeesHandler" text="View Employees" />
-                <Button fx:id="addEmployeeButton" layoutX="134.0" layoutY="61.0" mnemonicParsing="false" onAction="#addEmployeeViewHandler" text="Add Employee" />
-                <GridPane fx:id="addEmployeeGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="300.0" prefWidth="402.0" style="-fx-background-color: #FFFF00;">
-                    <columnConstraints>
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <FlowPane fx:id="mainFlowPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="634.0">
+          <children>
+              <VBox prefHeight="485.0" prefWidth="200.0" style="-fx-background-color: #1C046B;">
+                  <children>
+                      <Button fx:id="manageEmployeesButton" maxWidth="163.0" mnemonicParsing="false" onAction="#manageEmployeesHandler" prefHeight="27.0" prefWidth="163.0" style="-fx-background-color: #1C046B; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Employees" textFill="WHITE" underline="true">
+                          <VBox.margin>
+                              <Insets />
+                          </VBox.margin>
+                      </Button>
+                      <Button fx:id="manageSuppliesButton" mnemonicParsing="false" onAction="#manageSuppliesHandler" style="-fx-background-color: #1A00AA; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Supplies" textFill="WHITE" underline="true" />
+                      <Button fx:id="manageRewardsButton" mnemonicParsing="false" onAction="#manageRewardsHandler" style="-fx-background-color: #1C046B; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Rewards" textFill="WHITE" underline="true" />
+                      <Button fx:id="manageProductsButton" mnemonicParsing="false" onAction="#manageProductsHandler" style="-fx-background-color: #1A00AA; -fx-max-width: 390; -fx-background-radius: 0;" text="Manage Products" textFill="WHITE" underline="true" />
+                  </children>
+                  <FlowPane.margin>
+                      <Insets />
+                  </FlowPane.margin>
+              </VBox>
+              <AnchorPane fx:id="manageEmployeesAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
+                  <FlowPane.margin>
+                      <Insets />
+                  </FlowPane.margin>
+                  <padding>
+                      <Insets bottom="200.0" />
+                  </padding>
+                  <children>
+                  <TableView fx:id="employeesTableView" editable="true" prefHeight="378.0" prefWidth="409.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="88.0">
+                     <columns>
+                        <TableColumn fx:id="employeeIdTableColumn" prefWidth="53.542327880859375" text="Id" />
+                        <TableColumn fx:id="employeeNameTableColumn" prefWidth="65.22332763671875" text="Name" />
+                        <TableColumn fx:id="employeePhoneTableColumn" prefWidth="58.996917724609375" text="Phone" />
+                        <TableColumn fx:id="employeeBirthdayTableColumn" prefWidth="68.559814453125" text="Birthday" />
+                        <TableColumn fx:id="employeeSalaryTableColumn" prefWidth="55.276824951171875" text="Salary" />
+                        <TableColumn fx:id="employeePositionTableColumn" prefWidth="63.50634765625" text="Position" />
+                     </columns>
+                  </TableView>
+                      <Button fx:id="viewEmployeesButton" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewEmployeesHandler" text="View Employees" />
+                      <Button fx:id="addEmployeeButton" layoutX="134.0" layoutY="61.0" mnemonicParsing="false" onAction="#addEmployeeViewHandler" text="Add Employee" />
+                      <GridPane fx:id="addEmployeeGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="300.0" prefWidth="402.0" style="-fx-background-color: #FFFF00;" visible="false">
+                          <columnConstraints>
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="130.0" minWidth="1.0" prefWidth="90.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="267.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="18.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                          <children>
+                              <Label text="First Name:" />
+                              <TextField fx:id="empFirstnameTextField" prefWidth="174.0" GridPane.columnIndex="1" />
+                              <TextField fx:id="empLastnameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Last Name:" GridPane.rowIndex="1" />
+                              <Label text="Birthdate:" GridPane.rowIndex="2" />
+                              <Label text="Phone:" GridPane.rowIndex="3" />
+                              <Label text="Salary:" GridPane.rowIndex="4" />
+                              <Label text="Role:" GridPane.rowIndex="5" />
+                              <TextField fx:id="empPhoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="empSalaryTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <DatePicker fx:id="empBirthdatePicker" prefHeight="27.0" prefWidth="271.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Branch:" GridPane.rowIndex="6" />
+                              <ComboBox fx:id="branchEmpComboBox" prefHeight="27.0" prefWidth="269.0" promptText="Select Branch" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <ComboBox fx:id="roleEmpComboBox" prefHeight="27.0" prefWidth="269.0" promptText="Select Role" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                          </children>
+                          <padding>
+                              <Insets left="8.0" />
+                          </padding>
+                      </GridPane>
+                      <Button fx:id="submitAddButton" layoutX="375.0" layoutY="388.0" mnemonicParsing="false" onAction="#addEmployeeHandler" text="Add" visible="false" />
+                      <Button fx:id="clearEmpData" layoutX="324.0" layoutY="388.0" mnemonicParsing="false" onAction="#clearEmployeeDataHandler" text="Clear" visible="false" />
+                  </children>
+            </AnchorPane>
+            <AnchorPane fx:id="manageProductsAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
+               <padding>
+                  <Insets bottom="200.0" />
+               </padding>
+               <children>
+                  <Button fx:id="viewProductsButton" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewProductsHandler" text="View Products" />
+                  <Button fx:id="addProductButton" layoutX="123.0" layoutY="61.0" mnemonicParsing="false" onAction="#addProductViewHandler" text="Add Product" />
+                  <GridPane fx:id="addProductGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="300.0" prefWidth="402.0" style="-fx-background-color: #FF0000;" visible="false">
+                     <columnConstraints>
                         <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="130.0" minWidth="1.0" prefWidth="90.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="267.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="18.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
-                        <Label text="First Name:" />
-                        <TextField fx:id="empFirstnameTextField" prefWidth="174.0" GridPane.columnIndex="1" />
-                        <TextField fx:id="empLastnameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="Last Name:" GridPane.rowIndex="1" />
-                        <Label text="Birthdate:" GridPane.rowIndex="2" />
-                        <Label text="Phone:" GridPane.rowIndex="3" />
-                        <Label text="Salary:" GridPane.rowIndex="4" />
-                        <Label text="Role:" GridPane.rowIndex="5" />
-                        <TextField fx:id="empPhoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <TextField fx:id="empSalaryTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <DatePicker fx:id="empBirthdatePicker" prefHeight="27.0" prefWidth="271.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="Branch:" GridPane.rowIndex="6" />
-                        <ComboBox fx:id="branchEmpComboBox" prefHeight="27.0" prefWidth="269.0" promptText="Select Branch" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <ComboBox fx:id="roleEmpComboBox" prefHeight="27.0" prefWidth="269.0" promptText="Select Role" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                    </children>
-                    <padding>
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="81.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="192.0" minHeight="10.0" prefHeight="178.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label text="Product Name" />
+                        <TextField fx:id="productNameTextField" prefWidth="174.0" GridPane.columnIndex="1" />
+                        <Label text="Category" GridPane.rowIndex="1" />
+                        <Label text="Price" GridPane.rowIndex="2" />
+                        <Label text="Description" GridPane.rowIndex="3" />
+                        <TextArea fx:id="productDescriptionTextArea" maxHeight="100.0" maxWidth="267.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="267.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="productPriceTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="productCategoryComboBox" prefHeight="27.0" prefWidth="277.0" promptText="Select Category" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </children>
+                     <padding>
                         <Insets left="8.0" />
-                    </padding>
-                </GridPane>
-                <Button fx:id="submitAddButton" layoutX="375.0" layoutY="388.0" mnemonicParsing="false" onAction="#addEmployeeHandler" text="Add" />
-                <Button fx:id="clearEmpData" layoutX="324.0" layoutY="388.0" mnemonicParsing="false" onAction="#clearEmployeeDataHandler" text="Clear" />
-            </children></AnchorPane>
-      <AnchorPane fx:id="manageProductsAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
-         <padding>
-            <Insets bottom="200.0" />
-         </padding>
-         <children>
-            <ListView fx:id="productsListView" layoutX="100.0" layoutY="88.0" prefHeight="496.0" prefWidth="368.0" visible="false" AnchorPane.bottomAnchor="-184.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="88.0" />
-            <Button fx:id="viewProductsButton" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewProductsHandler" text="View Products" />
-            <Button fx:id="addProductButton" layoutX="123.0" layoutY="61.0" mnemonicParsing="false" onAction="#addProductViewHandler" text="Add Product" />
-            <GridPane fx:id="addProductGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="300.0" prefWidth="402.0" style="-fx-background-color: #FF0000;">
-               <columnConstraints>
-                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="130.0" minWidth="1.0" prefWidth="90.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="267.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="18.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="81.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="192.0" minHeight="10.0" prefHeight="178.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <Label text="Product Name" />
-                  <TextField fx:id="productNameTextField" prefWidth="174.0" GridPane.columnIndex="1" />
-                  <Label text="Category" GridPane.rowIndex="1" />
-                  <Label text="Price" GridPane.rowIndex="2" />
-                  <Label text="Description" GridPane.rowIndex="3" />
-                  <TextArea fx:id="productDescriptionTextArea" maxHeight="100.0" maxWidth="267.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="267.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <TextField fx:id="productPriceTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <ComboBox fx:id="productCategoryComboBox" prefHeight="27.0" prefWidth="277.0" promptText="Select Category" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </padding>
+                  </GridPane>
+                  <Button fx:id="submitAddProductButton" layoutX="375.0" layoutY="388.0" mnemonicParsing="false" onAction="#addProductHandler" text="Add" visible="false" />
+                  <Button fx:id="clearProductDataButton" layoutX="324.0" layoutY="388.0" mnemonicParsing="false" onAction="#clearProductDataHandler" text="Clear" visible="false" />
+                  <Button fx:id="addCategoryButton" layoutX="221.0" layoutY="388.0" mnemonicParsing="false" onAction="#addCategoryHandler" text="Add Category" visible="false" />
+                  <TableView fx:id="productsTableView" prefHeight="378.0" prefWidth="409.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="88.0">
+                     <columns>
+                        <TableColumn fx:id="productIdTableColumn" prefWidth="53.542327880859375" text="Id" />
+                        <TableColumn fx:id="productNameTableColumn" prefWidth="96.45767211914062" text="Name" />
+                        <TableColumn fx:id="productPriceTableColumn" prefWidth="75.0" text="Price" />
+                        <TableColumn fx:id="productCategoryTableColumn" prefWidth="75.0" text="Category" />
+                        <TableColumn fx:id="productDescriptionTableColumn" prefWidth="98.6634521484375" text="Description" />
+                     </columns>
+                  </TableView>
                </children>
+            </AnchorPane>
+            <AnchorPane fx:id="manageRewardsAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
                <padding>
-                  <Insets left="8.0" />
+                  <Insets bottom="200.0" />
                </padding>
-            </GridPane>
-            <Button fx:id="submitAddProductButton" layoutX="375.0" layoutY="388.0" mnemonicParsing="false" onAction="#addProductHandler" text="Add" />
-            <Button fx:id="clearProductDataButton" layoutX="324.0" layoutY="388.0" mnemonicParsing="false" onAction="#clearProductDataHandler" text="Clear" />
-            <Button fx:id="addCategoryButton" layoutX="221.0" layoutY="388.0" mnemonicParsing="false" onAction="#addCategoryHandler" text="Add Category" />
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="manageRewardsAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
-         <padding>
-            <Insets bottom="200.0" />
-         </padding>
-         <children>
-            <ListView fx:id="rewardsListView" layoutX="100.0" layoutY="88.0" prefHeight="496.0" prefWidth="368.0" visible="false" AnchorPane.bottomAnchor="-184.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="88.0" />
-            <Button fx:id="viewRewardsButton" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewRewardsHandler" text="View Rewards" />
-            <Button fx:id="addRewardButton" layoutX="123.0" layoutY="61.0" mnemonicParsing="false" onAction="#addRewardViewHandler" text="Add Reward" />
-            <GridPane fx:id="addRewardGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="169.0" prefWidth="402.0" style="-fx-background-color: #00ff00;">
-               <columnConstraints>
-                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="130.0" minWidth="1.0" prefWidth="90.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="267.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="18.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="81.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
-               </rowConstraints>
                <children>
-                  <Label text="Product" />
-                  <Label text="Points" GridPane.rowIndex="1" />
-                  <TextField fx:id="rewardPointsTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="rewardProductComboBox" prefHeight="27.0" prefWidth="267.0" promptText="Select Product" GridPane.columnIndex="1" />
+
+                  <Button fx:id="viewRewardsButton" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewRewardsHandler" text="View Rewards" />
+                  <Button fx:id="addRewardButton" layoutX="121.0" layoutY="61.0" mnemonicParsing="false" onAction="#addRewardViewHandler" text="Add Reward" />
+                  <GridPane fx:id="addRewardGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="169.0" prefWidth="402.0" style="-fx-background-color: #00ff00;" visible="false">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="130.0" minWidth="1.0" prefWidth="90.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="267.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="18.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="81.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label text="Product" />
+                        <Label text="Points" GridPane.rowIndex="1" />
+                        <TextField fx:id="rewardPointsTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="rewardProductComboBox" prefHeight="27.0" prefWidth="267.0" promptText="Select Product" GridPane.columnIndex="1" />
+                     </children>
+                     <padding>
+                        <Insets left="8.0" />
+                     </padding>
+                  </GridPane>
+                  <Button fx:id="submitAddRewardButton" layoutX="378.0" layoutY="255.0" mnemonicParsing="false" onAction="#addRewardHandler" text="Add" visible="false" />
+                  <Button fx:id="clearRewardDataButton" layoutX="326.0" layoutY="255.0" mnemonicParsing="false" onAction="#clearRewardDataHandler" text="Clear" visible="false" />
+                  <TableView fx:id="rewardsTableView" prefHeight="378.0" prefWidth="409.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="88.0">
+                     <columns>
+                        <TableColumn fx:id="rewardIdTableColumn" prefWidth="53.542327880859375" text="Id" />
+                        <TableColumn fx:id="rewardNameTableColumn" prefWidth="124.0439682006836" text="Name" />
+                        <TableColumn fx:id="rewardPriceTableColumn" prefWidth="105.38047790527344" text="Price" />
+                        <TableColumn fx:id="rewardPointsTableColumn" prefWidth="107.61956787109375" text="Points" />
+                     </columns>
+                  </TableView>
                </children>
+            </AnchorPane>
+            <AnchorPane fx:id="manageSuppliesAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
                <padding>
-                  <Insets left="8.0" />
+                  <Insets bottom="200.0" />
                </padding>
-            </GridPane>
-            <Button fx:id="submitAddRewardButton" layoutX="378.0" layoutY="255.0" mnemonicParsing="false" onAction="#addRewardHandler" text="Add" />
-            <Button fx:id="clearRewardDataButton" layoutX="326.0" layoutY="255.0" mnemonicParsing="false" onAction="#clearRewardDataHandler" text="Clear" />
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="manageSuppliesAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="434.0" style="-fx-background-color: #11AAFF;">
-         <padding>
-            <Insets bottom="200.0" />
-         </padding>
-         <children>
-            <ListView fx:id="suppliersListView" layoutX="100.0" layoutY="88.0" prefHeight="496.0" prefWidth="368.0" visible="false" AnchorPane.bottomAnchor="-184.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="88.0" />
-            <Button fx:id="viewProductsButton2" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewSuppliersHandler" text="View Suppliers" />
-            <Button fx:id="addSupplierButton" layoutX="123.0" layoutY="61.0" mnemonicParsing="false" onAction="#addSupplierViewHandler" text="Add Supplier" />
-            <GridPane fx:id="addSupplierGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="197.0" prefWidth="402.0" style="-fx-background-color: #FF00Ff;">
-               <columnConstraints>
-                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="130.0" minWidth="1.0" prefWidth="90.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="267.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="18.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="148.441162109375" minHeight="10.0" prefHeight="125.4498291015625" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="115.5501708984375" vgrow="SOMETIMES" />
-               </rowConstraints>
                <children>
-                  <Label text="Name" />
-                  <TextField fx:id="supplierNameTextField" prefWidth="174.0" GridPane.columnIndex="1" />
-                  <Label text="Phone" GridPane.rowIndex="1" />
-                  <TextField fx:id="supplierPhoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               </children>
-               <padding>
-                  <Insets left="8.0" />
-               </padding>
-            </GridPane>
-            <Button fx:id="submitAddSupplierButton" layoutX="378.0" layoutY="283.0" mnemonicParsing="false" onAction="#addSupplierHandler" text="Add" />
-            <Button fx:id="clearSupplierDataButton" layoutX="327.0" layoutY="283.0" mnemonicParsing="false" onAction="#clearSupplierDataHandler" text="Clear" />
-         </children>
-      </AnchorPane>
+                  <TableView fx:id="suppliersTableView" layoutX="17.0" layoutY="88.0" prefHeight="378.0" prefWidth="409.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="88.0">
+                    <columns>
+                      <TableColumn fx:id="supplierIdTableColumn" prefWidth="70.22639846801758" text="Id" />
+                      <TableColumn fx:id="supplierNameTableColumn" prefWidth="135.77359008789062" text="Name" />
+                        <TableColumn fx:id="supplierPhoneTableColumn" prefWidth="147.2359619140625" text="Phone" />
+                    </columns>
+                  </TableView>
+
+                   <Button fx:id="viewProductsButton2" layoutX="16.0" layoutY="61.0" mnemonicParsing="false" onAction="#viewSuppliersHandler" text="View Suppliers" AnchorPane.leftAnchor="16.0" />
+                   <Button fx:id="addSupplierButton" layoutX="123.0" layoutY="61.0" mnemonicParsing="false" onAction="#addSupplierViewHandler" text="Add Supplier" />
+                   <GridPane fx:id="addSupplierGridPane" alignment="CENTER_RIGHT" hgap="10.0" layoutX="16.0" layoutY="88.0" prefHeight="197.0" prefWidth="402.0" style="-fx-background-color: #FF00Ff;" visible="false" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="88.0">
+                      <columnConstraints>
+                         <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="130.0" minWidth="1.0" prefWidth="90.0" />
+                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="267.0" />
+                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="18.0" />
+                      </columnConstraints>
+                      <rowConstraints>
+                         <RowConstraints maxHeight="148.441162109375" minHeight="10.0" prefHeight="125.4498291015625" vgrow="SOMETIMES" />
+                         <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="115.5501708984375" vgrow="SOMETIMES" />
+                      </rowConstraints>
+                      <children>
+                         <Label text="Name" />
+                         <TextField fx:id="supplierNameTextField" prefWidth="174.0" GridPane.columnIndex="1" />
+                         <Label text="Phone" GridPane.rowIndex="1" />
+                         <TextField fx:id="supplierPhoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                      </children>
+                      <padding>
+                         <Insets left="8.0" />
+                      </padding>
+                   </GridPane>
+                   <Button fx:id="submitAddSupplierButton" layoutX="378.0" layoutY="283.0" mnemonicParsing="false" onAction="#addSupplierHandler" text="Add" visible="false" />
+                   <Button fx:id="clearSupplierDataButton" layoutX="327.0" layoutY="283.0" mnemonicParsing="false" onAction="#clearSupplierDataHandler" text="Clear" visible="false" />
+                </children>
+             </AnchorPane>
+           </children>
+       </FlowPane>
+       <AnchorPane fx:id="loginAnchorPane" layoutY="42.0" prefHeight="485.0" prefWidth="634.0" style="-fx-background-color: #FF0000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <children>
+             <TextField fx:id="usernameTextField" layoutX="219.0" layoutY="109.0" />
+             <Label layoutX="153.0" layoutY="114.0" text="Username" />
+             <TextField fx:id="passwordTextField" layoutX="217.0" layoutY="164.0" />
+             <Label layoutX="151.0" layoutY="169.0" text="Password" />
+             <Button fx:id="loginButton" layoutX="272.0" layoutY="260.0" mnemonicParsing="false" onAction="#loginHandler" text="Button" />
+             <ComboBox fx:id="loginComboBox" layoutX="227.0" layoutY="209.0" prefWidth="150.0" promptText="-- Select --" />
+          </children>
+       </AnchorPane>
     </children>
-</FlowPane>
+ </AnchorPane>

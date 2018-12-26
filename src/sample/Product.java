@@ -56,4 +56,28 @@ public class Product {
     public String toString(){
         return this.name + ", $" + this.price;
     }
+
+    public void setProductid(int productid) {
+        this.productid = productid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setCategoryid(int categoryid) {
+        this.categoryid = categoryid;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

@@ -8,16 +8,27 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    public static Stage mainStage;
+    public static Parent loginRoot;
+    public static Parent managerRoot;
+    public static Parent customerRoot;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        Scene scene = new Scene(root, 634, 485);
-        primaryStage.setTitle("SuperMarket");
+        mainStage = primaryStage;
+        loginRoot = FXMLLoader.load(getClass().getResource("login.fxml"));
+        managerRoot = FXMLLoader.load(getClass().getResource("manager.fxml"));
+        customerRoot = FXMLLoader.load(getClass().getResource("customer.fxml"));
+        mainStage.setResizable(false);
+
+
+        Scene scene = new Scene(loginRoot, 800, 600);
+        mainStage.setTitle("Login");
         //scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         //scene.getStylesheets().add("sample/style.css");
-        primaryStage.setScene(scene);
+        mainStage.setScene(scene);
 
-        primaryStage.show();
+        mainStage.show();
     }
 
 

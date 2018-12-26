@@ -4,7 +4,7 @@ public class Reward {
 
     public int productid;
     public String productName;
-    public int cost;
+    public int points;
     public int price;
 
     public Reward(){
@@ -14,7 +14,7 @@ public class Reward {
     public Reward(int productid, String productName, int cost, int price) {
         this.productid = productid;
         this.productName = productName;
-        this.cost = cost;
+        this.points = cost;
         this.price = price;
     }
 
@@ -26,11 +26,31 @@ public class Reward {
         return productName;
     }
 
-    public int getCost() {
-        return cost;
+    public int getPoints() {
+        return points;
     }
 
     public String toString(){
-        return this.productName + ", " + this.cost + " points";
+        return this.productName + ", " + this.points + " points";
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setProductid(int productid) {
+        this.productid = productid;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }

@@ -5,11 +5,15 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -20,8 +24,11 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     //View view = new View();
-    Model model = new Model();
-    Connection connection = model.connection;
+    Model model = Model.getInstanceOfModel();
+    //Connection connection = model.connection;
+    Login login = new Login();
+    @FXML
+    public Label changesLabel;
 
     public Controller(){
         //updateViewFromModel();
@@ -146,15 +153,67 @@ public class Controller implements Initializable {
     @FXML
     public TableColumn<Employee , Integer> employeeSalaryTableColumn;
     @FXML
-    public TableColumn<Employee , String> employeePositionTableColumn;
+    public TableColumn<Employee , Position> employeePositionTableColumn;
+    @FXML
+    public TableColumn<Employee , Branch> employeeBranchTableColumn;
+
+    @FXML
+    public void employeeApplyChangesHandler(){
+        Employee employee = model.employees.get(employeesTableView.getFocusModel().getFocusedCell().getRow());
+        model.editEmployee(employee);
+        changesLabel.setText("Changes Applied!");
+        changesLabel.setTextFill(Color.GREEN);
+        changesLabel.setVisible(true);
+    }
 
     public void setUpEmployeesTable() {
+        employeesTableView.setEditable(true);
+        employeeNameTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        employeeNameTableColumn.setOnEditStart(event -> {
+            changesLabel.setText("Changes not applied!");
+            changesLabel.setTextFill(Color.RED);
+            changesLabel.setVisible(true);
+        });
+        employeeNameTableColumn.setOnEditCommit(event -> {
+            final String fnValue = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(fnValue);
+        });
+        employeeNameTableColumn.setOnEditCancel(event -> {
+            changesLabel.setVisible(false);
+        });
+
+        employeePhoneTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        employeePhoneTableColumn.setOnEditCommit(event -> {
+            final String phoneValue = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setPhone(phoneValue);
+        });
+
+        employeeSalaryTableColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        employeeSalaryTableColumn.setOnEditCommit(event -> {
+            final int salaryValue = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setSalary(salaryValue);
+        });
+
+        employeePositionTableColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(model.getPositions())));
+        employeePositionTableColumn.setOnEditCommit(event -> {
+            final Position posValue = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setPosition(posValue);
+        });
+
+        employeeBranchTableColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(model.getBranches())));
+        employeeBranchTableColumn.setOnEditCommit(event -> {
+            final Branch branchValue = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setBranch(branchValue);
+        });
+
+        employeesTableView.refresh();
         employeeIdTableColumn.setCellValueFactory(new PropertyValueFactory<>("employeeid"));
-        employeeNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        employeeNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         employeePhoneTableColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         employeeBirthdayTableColumn.setCellValueFactory(new PropertyValueFactory<>("birthday"));
         employeeSalaryTableColumn.setCellValueFactory(new PropertyValueFactory<>("salary"));
         employeePositionTableColumn.setCellValueFactory(new PropertyValueFactory<>("positionName"));
+        employeeBranchTableColumn.setCellValueFactory(new PropertyValueFactory<>("branchLocation"));
 
         model.getEmployees();
         employeesTableView.setItems(model.employees);
@@ -163,7 +222,6 @@ public class Controller implements Initializable {
 
     @FXML
     public void viewEmployeesHandler() {
-        //manageEmployeesButton.getStyleClass().add("active");
         manageEmployeesButton.setStyle("-fx-max-width:390px;\n" +
                 "-fx-background-radius:0;\n" +
                 "-fx-background-color:#11AAFF;");
@@ -184,6 +242,8 @@ public class Controller implements Initializable {
         employeesTableView.setVisible(true);
         submitAddButton.setVisible(false);
         clearEmpData.setVisible(false);
+        changesLabel.setVisible(false);
+        editBranchAnchorPane.setVisible(false);
 
         branchEmpComboBox.setPromptText("Select Branch");
         model.getEmployees();
@@ -198,7 +258,7 @@ public class Controller implements Initializable {
         addEmployeeGridPane.setVisible(true);
         submitAddButton.setVisible(true);
         clearEmpData.setVisible(true);
-
+        editBranchAnchorPane.setVisible(false);
 
         //Setting up comboBoxes
         ArrayList<Position> positions = model.getPositions();
@@ -216,8 +276,7 @@ public class Controller implements Initializable {
     public void addEmployeeHandler(){
         Employee newEmployee = new Employee();
 
-        newEmployee.firstName = empFirstnameTextField.getText();
-        newEmployee.lastName = empLastnameTextField.getText();
+        newEmployee.name = empFirstnameTextField.getText() + " " + empLastnameTextField.getText();
         newEmployee.phone = empPhoneTextField.getText();
         newEmployee.birthday = model.formatDate(empBirthdatePicker.getEditor().getText().replace("/", "-"));
         newEmployee.salary = Integer.valueOf(empSalaryTextField.getText());
@@ -235,8 +294,10 @@ public class Controller implements Initializable {
         empBirthdatePicker.setValue(null);
         empPhoneTextField.setText("");
         empSalaryTextField.setText("");
-        roleEmpComboBox.getSelectionModel().clearAndSelect(0);
-        branchEmpComboBox.getSelectionModel().clearAndSelect(0);
+        roleEmpComboBox.getSelectionModel().clearSelection();
+        roleEmpComboBox.setPromptText("Select Position");
+        branchEmpComboBox.getSelectionModel().clearSelection();
+        branchEmpComboBox.setPromptText("Select Branch");
     }
     //endregion
 
@@ -366,15 +427,38 @@ public class Controller implements Initializable {
     @FXML
     public TableColumn<Reward , Integer> rewardPointsTableColumn;
 
+    /*
+    @FXML
+    public void rewardApplyHandler(){
+        //code to apply
+        changesLabel.setText("Changes Applied!");
+        changesLabel.setTextFill(Color.GREEN);
+        changesLabel.setVisible(true);
+    }*/
+
     public void setUpRewardsTable() {
         rewardIdTableColumn.setCellValueFactory(new PropertyValueFactory<>("productid"));
         rewardNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        //rewardPriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
-        rewardPointsTableColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
+        rewardPriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        rewardPointsTableColumn.setCellValueFactory(new PropertyValueFactory<>("points"));
 
+        rewardPointsTableColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        rewardPointsTableColumn.setOnEditStart(event -> {
+            changesLabel.setText("Changes not applied!");
+            changesLabel.setTextFill(Color.RED);
+            changesLabel.setVisible(true);
+        });
+        rewardPointsTableColumn.setOnEditCommit(event -> {
+            final int newPoints = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setPoints(newPoints);
+        });
+        rewardPointsTableColumn.setOnEditCancel(event -> {
+            changesLabel.setVisible(false);
+        });
+
+        rewardsTableView.refresh();
         model.getRewards();
         rewardsTableView.setItems(model.rewards);
-
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -416,7 +500,6 @@ public class Controller implements Initializable {
         ArrayList<Product> productsForComboBox = model.getProductsForComboBox();
         ObservableList<Product> observableProducts = FXCollections.observableArrayList(productsForComboBox);
         rewardProductComboBox.setItems(observableProducts);
-
     }
 
     @FXML
@@ -425,7 +508,7 @@ public class Controller implements Initializable {
 
         reward.productid = rewardProductComboBox.getValue().productid;
         reward.productName = rewardProductComboBox.getValue().name;
-        reward.cost = Integer.valueOf(rewardPointsTextField.getText());
+        reward.points = Integer.valueOf(rewardPointsTextField.getText());
 
         try {
             model.addReward(reward);
@@ -458,8 +541,6 @@ public class Controller implements Initializable {
     @FXML
     public Button submitAddProductButton;
     @FXML
-    public Button addCategoryButton;
-    @FXML
     public TextField productNameTextField;
     @FXML
     public TextField productPriceTextField;
@@ -473,7 +554,6 @@ public class Controller implements Initializable {
     @FXML
     public TableView<Product> productsTableView;
 
-
     @FXML
     public TableColumn<Product , Integer> productIdTableColumn;
     @FXML
@@ -485,7 +565,69 @@ public class Controller implements Initializable {
     @FXML
     public TableColumn<Product , String> productDescriptionTableColumn;
 
+    @FXML
+    public void productApplyChangesHandler(){
+        model.products = productsTableView.getItems();
+        for(Product p : model.products){
+            model.addProduct(p); //add products to database
+        }
+        changesLabel.setText("Changes Applied!");
+        changesLabel.setTextFill(Color.GREEN);
+        changesLabel.setVisible(true);
+    }
+
     public void setUpProductsTable(){
+        productsTableView.setEditable(true);
+        //Setting up Name TableColumn to be editable
+        //And to make it update the changesLabel to its required state
+        productNameTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        productNameTableColumn.setOnEditStart(event -> {
+            changesLabel.setText("Changes not applied!");
+            changesLabel.setTextFill(Color.RED);
+            changesLabel.setVisible(true);
+        });
+        productNameTableColumn.setOnEditCommit(event -> {
+            final String newName = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            productNameTableColumn.getTableView().getItems().get(event.getTablePosition().getRow()).setName(newName);
+        });
+        productNameTableColumn.setOnEditCancel(event -> {
+            changesLabel.setVisible(false);
+        });
+
+        //Now Setting up Price TableColumn to be editable
+        //
+        productPriceTableColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        productPriceTableColumn.setOnEditStart(event -> {
+            changesLabel.setText("Changes not applied!");
+            changesLabel.setTextFill(Color.RED);
+            changesLabel.setVisible(true);
+        });
+        productPriceTableColumn.setOnEditCommit(event -> {
+            final int newPrice = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            productPriceTableColumn.getTableView().getItems().get(event.getTablePosition().getRow()).setPrice(newPrice);
+        });
+        productPriceTableColumn.setOnEditCancel(event -> {
+            changesLabel.setVisible(false);
+        });
+
+        //Now Setting up Description TableColumn to be editable
+        //
+        productDescriptionTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        productDescriptionTableColumn.setOnEditStart(event -> {
+            changesLabel.setText("Changes not applied!");
+            changesLabel.setTextFill(Color.RED);
+            changesLabel.setVisible(true);
+        });
+        productDescriptionTableColumn.setOnEditCancel(event -> {
+            changesLabel.setVisible(false);
+        });
+        productDescriptionTableColumn.setOnEditCommit(event -> {
+            final String newDesc = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            productNameTableColumn.getTableView().getItems().get(event.getTablePosition().getRow()).setName(newDesc);
+        });
+
+        productsTableView.refresh();
+
         productIdTableColumn.setCellValueFactory(new PropertyValueFactory<>("productid"));
         productNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         productPriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
@@ -518,15 +660,11 @@ public class Controller implements Initializable {
         addProductGridPane.setVisible(false);
         submitAddProductButton.setVisible(false);
         clearProductDataButton.setVisible(false);
-        addCategoryButton.setVisible(false);
         productsTableView.setVisible(true);
-
+        changesLabel.setVisible(false);
 
         model.getProducts();
         productsTableView.setItems(model.products);
-
-
-
     }
 
     @FXML
@@ -534,10 +672,7 @@ public class Controller implements Initializable {
         addProductGridPane.setVisible(true);
         submitAddProductButton.setVisible(true);
         clearProductDataButton.setVisible(true);
-        addCategoryButton.setVisible(true);
         productsTableView.setVisible(false);
-
-
 
         ArrayList<Category> categories = model.getCategories();
         ObservableList<Category> observableCategories = FXCollections.observableArrayList(categories);
@@ -580,6 +715,105 @@ public class Controller implements Initializable {
             addProductViewHandler();
         });
     }
+
+    @FXML
+    public void deleteCategoryHandler(){
+        Dialog<Category> dialog = new Dialog<>();
+        dialog.setTitle("Delete Category");
+        dialog.setHeaderText("Select category to delete");
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        ComboBox<Category> comboBox = new ComboBox<>(FXCollections.observableArrayList(model.getCategories()));
+
+        comboBox.getSelectionModel().selectFirst();
+        dialogPane.setContent(comboBox);
+        dialog.setResultConverter((ButtonType button) -> {
+            if(button == ButtonType.OK){
+                if(comboBox.getValue() != null)
+                    model.deleteCategory(comboBox.getValue());
+            }
+            return null;
+        });
+        dialog.showAndWait();
+        viewProductsHandler();
+    }
+    //endregion
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //region Branch Management
+
+    @FXML
+    public AnchorPane editBranchAnchorPane;
+    @FXML
+    public TextField addBranchCountryTextField;
+    @FXML
+    public TextField addBranchCityTextField;
+    @FXML
+    public ComboBox<Branch> deleteBranchComboBox;
+    @FXML
+    public void editBranchesViewHandler(){
+        editBranchAnchorPane.setVisible(true);
+        employeesTableView.setVisible(false);
+        addEmployeeGridPane.setVisible(false);
+        deleteBranchComboBox.setItems(FXCollections.observableArrayList(model.getBranches()));
+        deleteBranchComboBox.getSelectionModel().clearSelection();
+        deleteBranchComboBox.setPromptText("--Select Branch--");
+        addBranchCityTextField.clear();
+        addBranchCountryTextField.clear();
+    }
+
+    @FXML
+    public void addBranchHandler(){
+        String city = addBranchCityTextField.getText();
+        String country = addBranchCountryTextField.getText();
+
+        Branch branch = new Branch(country, city);
+        model.addBranch(branch);
+        editBranchesViewHandler();
+    }
+
+    @FXML
+    public void deleteBranchHandler(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Are you sure?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() != ButtonType.OK){
+            return;
+        }
+        else{
+            model.deleteBranch(deleteBranchComboBox.getValue());
+            editBranchesViewHandler();
+        }
+    }
+
+    //endregion
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //region Logout
+    @FXML
+    public ImageView logoutButton;
+    @FXML
+    public void logoutHandler(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout Confirmation");
+        alert.setHeaderText("Are you sure you want to logout?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() != ButtonType.OK){
+            return;
+        }
+        Main.mainStage.getScene().setRoot(Main.loginRoot);
+        Main.mainStage.setTitle("Login");
+        viewEmployeesHandler();
+        login.isLoggedIn = false;
+    }
     //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -588,41 +822,9 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         viewEmployeesHandler();
-        loginComboBox.setItems(FXCollections.observableArrayList("Manager" , "Customer"));
 
         setUpViews();
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //region Login
-    @FXML
-    public AnchorPane loginAnchorPane;
-
-    @FXML
-    public TextField usernameTextField;
-    @FXML
-    public TextField passwordTextField;
-
-    @FXML
-    public ComboBox<String> loginComboBox;
-
-
-
-    @FXML
-    public void loginHandler() {
-        String username = usernameTextField.getText();
-        String password = passwordTextField.getText();
-        if (loginComboBox.getValue()==null)
-            return;
-        String side = loginComboBox.getValue();
-
-        if (model.verifyUser(username,password,side)){
-            loginAnchorPane.setVisible(false);
-        }
-    }
-    //endregion
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -635,9 +837,6 @@ public class Controller implements Initializable {
     }
 
 }
-
-
-
 
 
 

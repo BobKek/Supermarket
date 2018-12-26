@@ -11,6 +11,11 @@ public class Branch {
         this.country = country;
     }
 
+    public Branch(String country, String city) {
+        this.country = country;
+        this.city = city;
+    }
+
     public String toString(){
         return this.city + ", " + this.country;
     }

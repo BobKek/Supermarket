@@ -7,25 +7,31 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Model {
+    private static Model model = null; //Model is a singleton class
     ObservableList<Employee> employees;
     ObservableList<Supplier> suppliers;
     ObservableList<Reward> rewards;
     ObservableList<Product> products;
 
-
     Connection connection;
 
-    public Model(){
+    private Model(){
         this.connection = createConnection();
     }
 
+    public static Model getInstanceOfModel(){ //Get instance method of Model class
+        if(model == null){
+            model = new Model();
+        }
+        return model;
+    }
 
     public Connection createConnection(){
         connection = null;
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/SuperMarket", "root", "");
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/SuperMarket", "root", "root");
 
         }catch(Exception e){
             e.printStackTrace();
@@ -43,26 +49,27 @@ public class Model {
     ////////// Getting Tables //////////
     public void getEmployees() {
         int empid, salary, positionid, branchid;
-        String firstName, lastName, phone, birthday, employmentDate, positionName;
+        String name, phone, birthday, employmentDate, positionName, country, city;
         ArrayList<Employee> empsTemp = new ArrayList<>();
         Employee employee;
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Employee e join Position p where e.positionid = p.positionid");
+            ResultSet resultSet = statement.executeQuery("select * from EmployeeView");
             try {
                 while (resultSet.next()){
                     empid = resultSet.getInt("employeeid");
-                    firstName = resultSet.getString("first_name");
-                    lastName = resultSet.getString("last_name");
+                    name = resultSet.getString("name");
                     phone = resultSet.getString("phone");
                     birthday = resultSet.getString("birthday");
                     salary = resultSet.getInt("salary");
                     employmentDate = resultSet.getString("employment_date");
                     branchid = resultSet.getInt("branchid");
                     positionid = resultSet.getInt("positionid");
-                    positionName = resultSet.getString("position_name");
+                    positionName = resultSet.getString("positionname");
+                    country = resultSet.getString("country");
+                    city = resultSet.getString("city");
 
-                    employee = new Employee(empid, firstName, lastName, phone, birthday, salary, employmentDate, branchid, positionid, positionName);
+                    employee = new Employee(empid, name, phone, birthday, salary, employmentDate, branchid, positionid, positionName, country, city);
                     empsTemp.add(employee);
                 }
             } catch (Exception e1) {
@@ -103,12 +110,12 @@ public class Model {
         Reward reward;
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select p.productid, name, cost, price from Reward r join Product p where r.productid = p.productid");
+            ResultSet resultSet = statement.executeQuery("select p.productid, name, points, price from Reward r join Product p where r.productid = p.productid");
             try {
                 while (resultSet.next()){
                     productid = resultSet.getInt("productid");
                     price = resultSet.getInt("price");
-                    cost = resultSet.getInt("cost");
+                    cost = resultSet.getInt("points");
                     name = resultSet.getString("name");
                     reward = new Reward(productid, name, cost, price);
                     list.add(reward);
@@ -161,8 +168,8 @@ public class Model {
             ResultSet resultSet = statement.executeQuery("Select * from Position");
             while (resultSet.next()) {
                 int positionid = resultSet.getInt(1);
-                String position_name = resultSet.getString("position_name");
-                positionsList.add(new Position(positionid,position_name));
+                String name = resultSet.getString("name");
+                positionsList.add(new Position(positionid,name));
             }
         }
         catch (Exception e) {
@@ -240,22 +247,38 @@ public class Model {
 
     public void addEmployee(Employee employee){
         try {
-            String query = "INSERT INTO Employee (first_name, last_name, phone, salary, positionid, branchid,birthday,employment_date) " +
-                    "VALUES ( ?, ?, ?, ?, ?, ?,?,CURDATE());";
+            String query = "INSERT INTO Employee (name, phone, salary, positionid, branchid,birthday,employment_date) " +
+                    "VALUES ( ?, ?, ?, ?, ?, ?,CURDATE());";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, employee.firstName);
-            preparedStatement.setString(2, employee.lastName);
-            preparedStatement.setString(3, employee.phone);
-            preparedStatement.setInt(4, employee.salary);
-            preparedStatement.setInt(5, employee.positionid);
-            preparedStatement.setInt(6,employee.branchid);
-            preparedStatement.setString(7, employee.birthday);
+            preparedStatement.setString(1, employee.name);
+            //preparedStatement.setString(2, employee.lastName);
+            preparedStatement.setString(2, employee.phone);
+            preparedStatement.setInt(3, employee.salary);
+            preparedStatement.setInt(4, employee.positionid);
+            preparedStatement.setInt(5, employee.branchid);
+            preparedStatement.setString(6, employee.birthday);
             preparedStatement.execute();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void editEmployee(Employee employee){
+        try {
+            String query = "UPDATE Employee set name = ?, phone = ?, salary = ?, positionid = ?, branchid = ?" +
+                    " where employeeid = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, employee.getName());
+            preparedStatement.setString(2, employee.getPhone());
+            preparedStatement.setInt(3, employee.getSalary());
+            preparedStatement.setInt(4, employee.getPositionid());
+            preparedStatement.setInt(5, employee.getBranchid());
+            preparedStatement.setInt(6, employee.getEmployeeid());
+            preparedStatement.execute();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void addSupplier(Supplier supplier){
         try {
@@ -271,10 +294,10 @@ public class Model {
 
     public void addReward(Reward reward){
         try {
-            String query = "INSERT INTO Reward (productid, cost) VALUES (?, ?);";
+            String query = "INSERT INTO Reward (productid, points) VALUES (?, ?);";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, reward.productid);
-            preparedStatement.setInt(2, reward.cost);
+            preparedStatement.setInt(2, reward.points);
             preparedStatement.execute();
         }catch (SQLIntegrityConstraintViolationException e){
             e.printStackTrace();
@@ -294,7 +317,19 @@ public class Model {
             preparedStatement.setString(3, product.description);
             preparedStatement.setInt(4, product.categoryid);
             preparedStatement.execute();
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String query = "UPDATE Product set name = ?, price = ?, description = ? where productid = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, product.name);
+            preparedStatement.setInt(2, product.price);
+            preparedStatement.setString(3, product.description);
+            preparedStatement.setInt(4, product.getProductid());
+            preparedStatement.execute();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -311,9 +346,45 @@ public class Model {
         }
     }
 
+    public void addBranch(Branch branch){
+        try {
+            String query = "INSERT INTO Branch (city, country) VALUES (?, ?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, branch.city);
+            preparedStatement.setString(2, branch.country);
+            preparedStatement.execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public void deleteCategory(Category category){
+        try {
+            String query = "DELETE from Category where categoryid = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, category.categoryid);
+            preparedStatement.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteBranch(Branch branch){
+        try {
+            String query = "DELETE from Branch where branchid = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, branch.branchid);
+            preparedStatement.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public boolean verifyUser(String username , String password , String side) {
         try {

@@ -2,14 +2,14 @@ package sample;
 
 public class Position {
     public int positionid;
-    public String position_name;
+    public String name;
 
     public Position(int id , String name){
         this.positionid = id;
-        this.position_name = name;
+        this.name = name;
     }
 
     public String toString(){
-        return this.position_name;
+        return this.name;
     }
 }

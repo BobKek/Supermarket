@@ -4,9 +4,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import sample.Model.Model;
+import sample.Model.objects.Customer;
 
 import java.net.URL;
 import java.util.Optional;
@@ -25,6 +26,8 @@ public class Login implements Initializable {
     public ComboBox<String> loginComboBox;
     @FXML
     public ProgressBar loggingInProgressBar;
+    @FXML
+    public Button loginButton;
 
     @FXML
     public void loginHandler(){
@@ -40,6 +43,7 @@ public class Login implements Initializable {
         }
         String side = loginComboBox.getValue();
         if (Model.getInstanceOfModel().verifyUser(username,password,side)){
+            Customer customer = Model.getInstanceOfModel().getCustomer(username);
             loggingInProgressBar.setVisible(true);
             Float[] values = new Float[]{-1.0f, -0.9f, -0.8f, -0.7f, 0.6f, -0.5f, -0.4f, -0.3f, -0.2f, -0.1f, 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f};
 
@@ -49,12 +53,18 @@ public class Login implements Initializable {
             alert.setTitle("Success");
             alert.setHeaderText("Login successful!");
             alert.showAndWait();
+            Main.mainStage.centerOnScreen();
+            Main.mainStage.setWidth(1200);
+            Main.mainStage.setHeight(800);
             if(side.contains("Customer")){
-                Main.mainStage.setScene(new Scene(Main.customerRoot, 1200, 800));
+                Main.mainStage.getScene().setRoot(Main.customerRoot);
+                Main.customerController.setLoggedInCustomer(customer);
+                //Main.mainStage.setScene(new Scene(Main.customerRoot, 1200, 800));
                 Main.mainStage.setTitle("SuperMarket");
             }
             else {
-                Main.mainStage.setScene(new Scene(Main.managerRoot, 1200, 800));
+                Main.mainStage.getScene().setRoot(Main.managerRoot);
+                //Main.mainStage.setScene(new Scene(Main.managerRoot, 1200, 800));
                 Main.mainStage.setTitle("Manager Side");
             }
             isLoggedIn = true;
@@ -90,6 +100,22 @@ public class Login implements Initializable {
             }
             e.consume();
         });
+    }
+
+    @FXML
+    public void exitHandler(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Are you sure you want to exit?");
+
+        ButtonType cancel = new ButtonType("Cancel");
+        ButtonType exit = new ButtonType("Exit");
+        alert.getButtonTypes().setAll(cancel, exit);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == exit){
+            Platform.exit();
+        }
     }
 
     @Override

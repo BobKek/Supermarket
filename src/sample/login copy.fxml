@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Login">
+   <children>
+      <AnchorPane fx:id="loginAnchorPane" layoutY="160.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="642.0" prefWidth="277.0" style="-fx-background-color: #FFFFFF;">
+              <children>
+                  <TextField fx:id="usernameTextField" layoutX="83.0" layoutY="107.0" />
+                  <Label layoutX="97.0" layoutY="114.0" text="Username" AnchorPane.leftAnchor="8.0" />
+                  <TextField fx:id="passwordTextField" layoutX="83.0" layoutY="154.0" AnchorPane.leftAnchor="84.0" />
+                  <Label layoutX="93.0" layoutY="160.0" text="Password" AnchorPane.leftAnchor="8.0" />
+                  <Button fx:id="loginButton" layoutX="198.0" layoutY="250.0" mnemonicParsing="false" onAction="#loginHandler" text="Login" />
+                  <ComboBox fx:id="loginComboBox" layoutX="102.0" layoutY="195.0" prefWidth="150.0" promptText="-- Select --" />
+            <ProgressBar fx:id="loggingInProgressBar" layoutX="36.0" layoutY="318.0" prefWidth="200.0" progress="0.0" visible="false" />
+              </children>
+          </AnchorPane>
+      <ImageView fitHeight="808.0" fitWidth="1285.0" layoutX="269.0" layoutY="-3.0" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="269.0" AnchorPane.rightAnchor="-354.0" AnchorPane.topAnchor="-3.0">
+         <image>
+            <Image url="@redHearts.jpg" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

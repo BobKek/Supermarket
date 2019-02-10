@@ -1,16 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #FAAF00;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.customerController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #FAAF00;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller.CustomerController">
    <children>
-      <ImageView fx:id="logoutButton" fitHeight="53.0" fitWidth="65.0" layoutY="424.0" onMouseClicked="#logoutHandler" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="logoutButton" fitHeight="53.0" fitWidth="65.0" layoutY="424.0" onMouseClicked="#logoutHandler" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0">
          <image>
-            <Image url="@arrowEdited.png" />
+            <Image url="@arrow.png" />
          </image>
       </ImageView>
+      <TableView fx:id="productsTableView" layoutX="407.0" layoutY="67.0" prefHeight="563.0" prefWidth="778.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="67.0">
+         <columns>
+            <TableColumn fx:id="productIdTableColumn" prefWidth="55.0" text="Id" />
+            <TableColumn fx:id="productNameTableColumn" prefWidth="135.0" text="Name" />
+            <TableColumn fx:id="productPriceTableColumn" prefWidth="101.79725646972656" text="Price" />
+            <TableColumn fx:id="productCategoryTableColumn" prefWidth="110.32867431640625" text="Category" />
+            <TableColumn fx:id="productDescriptionTableColumn" prefWidth="399.1256103515625" text="Description" />
+         </columns>
+      </TableView>
+      <TextField fx:id="searchTextField" layoutX="536.0" layoutY="37.0" promptText="Enter keyword here..." AnchorPane.rightAnchor="497.0" AnchorPane.topAnchor="37.0" />
+      <Label layoutX="428.0" layoutY="41.0" text="Search by name:" AnchorPane.rightAnchor="669.0" AnchorPane.topAnchor="41.0" />
+      <Button layoutX="711.0" layoutY="35.0" mnemonicParsing="false" onAction="#searchHandler" prefHeight="30.0" prefWidth="70.0" text="Search" AnchorPane.leftAnchor="711.0" AnchorPane.topAnchor="35.0" />
+      <Button layoutX="785.0" layoutY="35.0" mnemonicParsing="false" onAction="#resetTableData" prefHeight="30.0" prefWidth="70.0" text="Reset" AnchorPane.leftAnchor="785.0" AnchorPane.topAnchor="35.0" />
+      <TableView fx:id="ordersTableView" layoutX="407.0" layoutY="67.0" prefHeight="563.0" prefWidth="778.0">
+         <columns>
+            <TableColumn fx:id="orderIdTableColumn" prefWidth="55.0" text="Id" />
+            <TableColumn fx:id="orderProductNameTableColumn" prefWidth="135.0" text="Name" />
+            <TableColumn fx:id="orderProductPriceTableColumn" prefWidth="101.79725646972656" text="Price" />
+            <TableColumn fx:id="orderProductQuantityTableColumn" prefWidth="110.32867431640625" text="Qty" />
+            <TableColumn fx:id="orderProductTotalPriceColumn" prefWidth="399.1256103515625" text="Total" />
+         </columns>
+      </TableView>
+      <Button layoutX="63.0" layoutY="111.0" mnemonicParsing="false" onAction="#viewProducts" text="View Products" />
+      <Button layoutX="63.0" layoutY="186.0" mnemonicParsing="false" onAction="#viewMyOrders" text="View My Orders" />
+      <Button layoutX="266.0" layoutY="325.0" mnemonicParsing="false" onAction="#addOrderHandler" text="Add Order" />
+      <TextField fx:id="productIdTextField" layoutX="183.0" layoutY="219.0" promptText="Product Number" />
+      <TextField fx:id="productQuantityTextField" layoutX="183.0" layoutY="269.0" promptText="Quantity" />
    </children>
 </AnchorPane>
